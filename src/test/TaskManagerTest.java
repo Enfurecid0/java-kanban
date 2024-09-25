@@ -91,4 +91,39 @@ class TaskManagerTest {
         assertArrayEquals(arrayOne, arrayTwo, "Задачи с заданным id и сгенерированным id не конфликтуют " +
                 "внутри менеджера");
     }
+
+    @Test
+    void deletedSubtasksShouldNotStoreOldIds() {
+        TaskManager manager = Managers.getDefault();
+        Epic epic1 = new Epic(1, "Epic1", "epic number 1", TaskStatus.NEW);
+        manager.addEpic(epic1);
+        Subtask subtask1 = new Subtask(2, "Subtask1", "subtask number 1", TaskStatus.NEW, 1);
+        manager.addSubtask(subtask1);
+        manager.removeSubtaskById(2);
+        assertNotEquals(manager.getSubtasks(), "Удаляемая подзадача не хранит в себе старый Id");
+    }
+
+    @Test
+    void shouldBeNoIrrelevantIdSubtasksInsideEpics() {
+        TaskManager manager = Managers.getDefault();
+        Epic epic1 = new Epic(1, "Epic1", "epic number 1", TaskStatus.NEW);
+        manager.addEpic(epic1);
+        Subtask subtask1 = new Subtask(2, "Subtask1", "subtask number 1", TaskStatus.NEW, 1);
+        manager.addSubtask(subtask1);
+        manager.removeSubtaskById(2);
+        assertNotEquals(manager.getEpicSubtasks(1), "Список эпиков пуст");
+    }
+
+    @Test
+    void usingSettersAllowToChangeTheirFields() {
+        TaskManager manager = Managers.getDefault();
+        Task task1 = new Task(1, "Task1", "task number 1", TaskStatus.NEW);
+        final int taskId1 = manager.addTask(task1);
+        /*final*/ Task task2 = new Task("Task2", "task number 2", TaskStatus.NEW);
+        task2 = new Task(taskId1, task2.getName(), task2.getDescription(), task2.getStatus());
+        Task[] arrayOne = new Task[]{task1};
+        Task[] arrayTwo = new Task[]{task2};
+        assertNotEquals(arrayOne, arrayTwo, "Задачи с одинаковыми id должны быть одинаковыми. " +
+                "Чтобы не допустить изменений полей с помощью сеттеров, используйте final в объявлении задач.");
+    }
 }
