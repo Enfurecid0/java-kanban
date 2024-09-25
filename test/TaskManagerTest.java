@@ -1,5 +1,3 @@
-package test;
-
 import org.junit.jupiter.api.Test;
 import status.TaskStatus;
 import task.Epic;
@@ -122,7 +120,8 @@ class TaskManagerTest {
         TaskManager manager = Managers.getDefault();
         Task task1 = new Task(1, "Task1", "task number 1", TaskStatus.NEW);
         final int taskId1 = manager.addTask(task1);
-        /*final*/ Task task2 = new Task("Task2", "task number 2", TaskStatus.NEW);
+        /*final*/
+        Task task2 = new Task("Task2", "task number 2", TaskStatus.NEW);
         task2 = new Task(taskId1, task2.getName(), task2.getDescription(), task2.getStatus());
         Task[] arrayOne = new Task[]{task1};
         Task[] arrayTwo = new Task[]{task2};
