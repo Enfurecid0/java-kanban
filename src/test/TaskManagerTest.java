@@ -2,8 +2,11 @@ package test;
 
 import org.junit.jupiter.api.Test;
 import status.TaskStatus;
-import task.*;
-import manager.*;
+import task.Epic;
+import task.Task;
+import task.Subtask;
+import manager.Managers;
+import manager.TaskManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
