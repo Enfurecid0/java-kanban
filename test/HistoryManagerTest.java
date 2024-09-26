@@ -14,7 +14,8 @@ public class HistoryManagerTest {
         Task task1 = new Task(1, "Task1", "task number 1", TaskStatus.NEW);
         manager.addTask(task1);
         final List<Task> history = manager.getHistory();
-        Assertions.assertNotEquals(history, "В истории просмотров есть " + task1);
+        Assertions.assertEquals(1, history.size(), "История должна содержать одну задачу");
+        Assertions.assertEquals(task1, history.get(0), "Единственная задача в истории должна быть" + task1);
     }
 
     @Test
@@ -24,6 +25,6 @@ public class HistoryManagerTest {
         manager.addTask(task1);
         manager.remove(1);
         final List<Task> history = manager.getHistory();
-        Assertions.assertNotEquals(history, "История просмотров пуста");
+        Assertions.assertTrue(history.isEmpty(), "История должна быть пустой после удаления задачи");
     }
 }

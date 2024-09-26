@@ -6,6 +6,8 @@ import task.Subtask;
 import manager.Managers;
 import manager.TaskManager;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
@@ -101,7 +103,7 @@ class TaskManagerTest {
         Subtask subtask1 = new Subtask(2, "Subtask1", "subtask number 1", TaskStatus.NEW, 1);
         manager.addSubtask(subtask1);
         manager.removeSubtaskById(2);
-        assertNotEquals(manager.getSubtasks(), "Удаляемая подзадача не хранит в себе старый Id");
+        assertTrue(manager.getSubtasks().isEmpty(), "Список подзадач должен быть пустым после удаления подзадачи");
     }
 
     @Test
@@ -112,20 +114,20 @@ class TaskManagerTest {
         Subtask subtask1 = new Subtask(2, "Subtask1", "subtask number 1", TaskStatus.NEW, 1);
         manager.addSubtask(subtask1);
         manager.removeSubtaskById(2);
-        assertNotEquals(manager.getEpicSubtasks(1), "Список эпиков пуст");
+        List<Subtask> epicSubtasks = manager.getEpicSubtasks(1);
+        assertTrue(epicSubtasks.isEmpty(), "Список подзадач эпика должен быть пустым после удаления подзадачи.");
     }
 
     @Test
     void usingSettersAllowToChangeTheirFields() {
         TaskManager manager = Managers.getDefault();
+
         Task task1 = new Task(1, "Task1", "task number 1", TaskStatus.NEW);
         final int taskId1 = manager.addTask(task1);
-        /*final*/
+
         Task task2 = new Task("Task2", "task number 2", TaskStatus.NEW);
         task2 = new Task(taskId1, task2.getName(), task2.getDescription(), task2.getStatus());
-        Task[] arrayOne = new Task[]{task1};
-        Task[] arrayTwo = new Task[]{task2};
-        assertNotEquals(arrayOne, arrayTwo, "Задачи с одинаковыми id должны быть одинаковыми. " +
-                "Чтобы не допустить изменений полей с помощью сеттеров, используйте final в объявлении задач.");
+
+        assertNotEquals(task1, task2, "Задачи с одинаковыми id должны считаться одинаковыми.");
     }
 }
