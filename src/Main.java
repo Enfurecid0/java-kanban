@@ -1,4 +1,3 @@
-
 import manager.Managers;
 import manager.TaskManager;
 import status.TaskStatus;
@@ -7,7 +6,6 @@ import task.Epic;
 import task.Subtask;
 
 public class Main {
-
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
@@ -39,7 +37,6 @@ public class Main {
         final int subtaskId3 = manager.addSubtask(subtask3);
         subtask3 = new Subtask(subtaskId3, subtask3.getName(), subtask3.getDescription(), subtask3.getStatus(), epicId2);
 
-
         manager.getTask(1);
         manager.getEpic(2);
         manager.getSubtask(3);
@@ -58,6 +55,7 @@ public class Main {
         manager.getEpic(6);
         printAllTasks(manager);
     }
+
     private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getTasks()) {
@@ -66,7 +64,6 @@ public class Main {
         System.out.println("Эпики:");
         for (Task epic : manager.getEpics()) {
             System.out.println(epic);
-
             for (Task task : manager.getEpicSubtasks(epic.getId())) {
                 System.out.println("--> " + task);
             }
