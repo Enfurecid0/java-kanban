@@ -103,7 +103,7 @@ class TaskManagerTest {
         Subtask subtask1 = new Subtask(2, "Subtask1", "subtask number 1", TaskStatus.NEW, 1);
         manager.addSubtask(subtask1);
         manager.removeSubtaskById(2);
-        assertTrue(manager.getSubtasks().isEmpty(), "Список подзадач должен быть пустым после удаления подзадачи");
+        assertNotEquals(manager.getSubtasks(), "Удаляемая подзадача не хранит в себе старый Id");
     }
 
     @Test

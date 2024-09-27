@@ -11,12 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int generatorId = 0;
+    protected int generatorId = 0;
+
+    @Override
+    public ArrayList<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    @Override
+    public ArrayList<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    @Override
+    public ArrayList<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
 
     @Override
     public int addTask(Task task) {
@@ -123,25 +138,28 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public Task updateTask(Task task) {
         tasks.put(task.getId(), task);
+        return task;
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public Task updateEpic(Epic epic) {
         Epic oldEpic = epics.get(epic.getId());
         oldEpic.setName(epic.getName());
         oldEpic.setDescription(epic.getDescription());
+        return oldEpic;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public Subtask updateSubtask(Subtask subtask) {
         int epicId = subtask.getEpicId();
         Subtask oldSubtask = subtasks.get(subtask.getId());
         oldSubtask.setName(subtask.getName());
-        oldSubtask.setDescription(subtask.getDescription());
+        oldSubtask.setStatus(subtask.getStatus());
         Epic epic = epics.get(epicId);
         updateEpicStatus(epic);
+        return subtask;
     }
 
     @Override
