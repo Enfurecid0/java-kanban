@@ -12,13 +12,13 @@ import java.nio.charset.StandardCharsets;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
-    public static final String Header = "id,type,name,description,status, epic \n";
+    public static final String Header = "id,type,name,description,status,epic \n";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
-    public void save() {
+    private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(Header);
             writer.newLine();
@@ -66,20 +66,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public int addTask(Task task) {
+        int id = super.addTask(task);
         save();
-        return super.addTask(task);
+        return id;
     }
 
     @Override
     public int addEpic(Epic epic) {
+        int id = super.addEpic(epic);
         save();
-        return super.addEpic(epic);
+        return id;
     }
 
     @Override
     public int addSubtask(Subtask subtask) {
+        int id = super.addSubtask(subtask);
         save();
-        return super.addSubtask(subtask);
+        return id;
     }
 
     @Override
@@ -102,20 +105,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Task updateTask(Task task) {
+        Task updatedTask = super.updateTask(task);
         save();
-        return super.updateTask(task);
+        return updatedTask;
     }
 
     @Override
     public Task updateEpic(Epic epic) {
+        Task updatedEpic = super.updateEpic(epic);
         save();
-        return super.updateEpic(epic);
+        return updatedEpic;
     }
 
     @Override
     public Subtask updateSubtask(Subtask subtask) {
+        Subtask updatedSubtask = super.updateSubtask(subtask);
         save();
-        return super.updateSubtask(subtask);
+        return updatedSubtask;
     }
 
     @Override
@@ -161,7 +167,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 subtask.setStatus(status);
                 return subtask;
             default:
-                throw new IllegalArgumentException("Unknown type: " + taskType);
+                throw new IllegalArgumentException("Неизвестный тип: " + taskType);
         }
     }
 }

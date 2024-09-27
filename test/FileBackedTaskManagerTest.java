@@ -34,8 +34,6 @@ class FileBackedTaskManagerTest {
         Task task2 = new Task(2, "Task2", "task number 2", TaskStatus.NEW);
         fileBackedTaskManager.addTask(task2);
 
-        fileBackedTaskManager.save();
-
         if (!tempFile.exists()) {
             System.out.println("Файл не был создан: " + tempFile.getAbsolutePath());
         } else {
