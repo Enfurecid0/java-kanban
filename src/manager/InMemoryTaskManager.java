@@ -35,7 +35,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addTask(Task task) {
-        overlapTask(task);
+        if (overlapTask(task)) {
+            return -1;
+        }
         final int id = ++generatorId;
         task.setId(id);
         tasks.put(id, task);
@@ -242,7 +244,7 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks;
     }
 
-    public LocalDateTime getStartTime(Epic epic) {
+    private LocalDateTime getStartTime(Epic epic) {
         List<Subtask> subtasks = getEpicSubtasks(epic.getId());
         return subtasks.stream()
                 .map(Subtask::getStartTime)
@@ -251,13 +253,13 @@ public class InMemoryTaskManager implements TaskManager {
                 .orElse(null);
     }
 
-    public LocalDateTime getEndTime(Epic epic) {
+    private LocalDateTime getEndTime(Epic epic) {
         return Optional.ofNullable(epic.getStartTime())
                 .map(startTime -> startTime.plus(epic.getDuration()))
                 .orElse(null);
     }
 
-    public Duration getDuration(Epic epic) {
+    private Duration getDuration(Epic epic) {
         List<Subtask> subtasks = getEpicSubtasks(epic.getId());
         return subtasks.stream()
                 .map(Subtask::getDuration)
@@ -266,13 +268,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updatePrioritizedTasks() {
-        List<Task> tasks = getTasks();
-        List<Subtask> subtasks = getSubtasks();
-        tasks.addAll(subtasks);
-        List<Task> tasksWithStartTime = tasks.stream()
-                .filter(task -> task.getStartTime() != null)
-                .toList();
-        prioritizedTasks.addAll(tasksWithStartTime);
+        prioritizedTasks.clear();
+        for (Task task : getTasks()) {
+            if (task.getStartTime() != null) {
+                prioritizedTasks.add(task);
+            }
+        }
+        for (Subtask subtask : getSubtasks()) {
+            if (subtask.getStartTime() != null) {
+                prioritizedTasks.add(subtask);
+            }
+        }
     }
 
     private boolean overlapTask(Task task) {
@@ -283,7 +289,7 @@ public class InMemoryTaskManager implements TaskManager {
             LocalDateTime taskEndTime = task.getEndTime();
             LocalDateTime prioritizedTaskEndTime = prioritizedTask.getEndTime();
             if (taskEndTime.isAfter(prioritizedTask.getStartTime()) && task.getStartTime().isBefore(prioritizedTaskEndTime)) {
-                throw new IllegalArgumentException("Задача пересекается с другой задачей и не может быть добавлена.");
+                return true;
             }
         }
         return false;

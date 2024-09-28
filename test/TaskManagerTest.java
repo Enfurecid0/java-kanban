@@ -201,12 +201,9 @@ class TaskManagerTest {
         Task task2 = new Task("Task2", "Task number 2", Duration.ofMinutes(10), LocalDateTime.now().plusMinutes(5));
 
         int initialSize = manager.getPrioritizedTasks().size();
+        int result = manager.addTask(task2);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            manager.addTask(task2);
-        });
-
+        assertEquals(-1, result, "Пересекающаяся задача должна возвращать -1");
         assertEquals(initialSize, manager.getPrioritizedTasks().size(), "Пересекающаяся задача не должна добавляться");
-        assertEquals("Задача пересекается с другой задачей и не может быть добавлена.", exception.getMessage());
     }
 }
