@@ -1,4 +1,5 @@
 import task.Task;
+import task.TaskType;
 import manager.FileBackedTaskManager;
 import status.TaskStatus;
 import org.junit.jupiter.api.Assertions;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 class FileBackedTaskManagerTest {
@@ -28,10 +31,12 @@ class FileBackedTaskManagerTest {
 
     @Test
     void savingAndLoadingMultipleTasks() throws IOException {
-        Task task1 = new Task(1, "Task1", "task number 1", TaskStatus.NEW);
+        Task task1 = new Task(1, TaskType.TASK, "Task1", "task number 1", TaskStatus.NEW,
+                Duration.ofMinutes(5), LocalDateTime.now());
         fileBackedTaskManager.addTask(task1);
 
-        Task task2 = new Task(2, "Task2", "task number 2", TaskStatus.NEW);
+        Task task2 = new Task(2, TaskType.TASK, "Task2", "task number 2", TaskStatus.NEW,
+                Duration.ofMinutes(5), LocalDateTime.now().plusHours(1));
         fileBackedTaskManager.addTask(task2);
 
         if (!tempFile.exists()) {

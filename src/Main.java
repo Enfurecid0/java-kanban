@@ -9,7 +9,7 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault(new File("./src/save.csv"));
+        TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task("task1", "task number1", TaskStatus.NEW);
         final int taskId1 = manager.addTask(task1);
