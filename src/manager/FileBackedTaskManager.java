@@ -8,11 +8,13 @@ import status.TaskStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
-    public static final String Header = "id,type,name,description,status,epic \n";
+    public static final String Header = "id,type,name,description,status,duration,startTime,epic \n";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -22,18 +24,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(Header);
             writer.newLine();
-            for (Task task : getAllTasks()) {
-                writer.write(task.toString());
-                writer.newLine();
-            }
-            for (Epic epic : getAllEpics()) {
-                writer.write(epic.toString());
-                writer.newLine();
-                for (Subtask subtask : getEpicSubtasks(epic.getId())) {
-                    writer.write(subtask.toString());
-                    writer.newLine();
-                }
-            }
+            getAllTasks().stream()
+                    .map(Task::toString)
+                    .forEach(taskString -> {
+                        try {
+                            writer.write(taskString + "\n");
+                        } catch (IOException exp) {
+                            throw new ManagerSaveException("Ошибка сохранения задачи.");
+                        }
+                    });
+
+            getAllEpics().stream()
+                    .map(Epic::toString)
+                    .forEach(epicString -> {
+                        try {
+                            writer.write(epicString + "\n");
+                        } catch (IOException exp) {
+                            throw new ManagerSaveException("Ошибка сохранения эпика.");
+                        }
+                    });
+
+            getAllSubtasks().stream()
+                    .map(Subtask::toString)
+                    .forEach(subtaskString -> {
+                        try {
+                            writer.write(subtaskString + "\n");
+                        } catch (IOException exp) {
+                            throw new ManagerSaveException("Ошибка сохранения подзадачи.");
+                        }
+                    });
         } catch (IOException e) {
             throw new ManagerSaveException("Can't write to file: " + file.getName());
         }
@@ -149,20 +168,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = line[2];
         String description = line[3];
         TaskStatus status = TaskStatus.valueOf(line[4]);
+        Duration duration = Duration.parse(line[5]);
+        LocalDateTime startTime = LocalDateTime.parse(line[6]);
 
         switch (taskType) {
             case "TASK":
-                Task task = new Task(name, description);
+                Task task = new Task(name, description, duration, startTime);
                 task.setStatus(status);
                 task.setId(id);
                 return task;
             case "EPIC":
-                Epic epic = new Epic(name, description);
+                Epic epic = new Epic(name, description, duration, startTime);
                 epic.setId(id);
                 return epic;
             case "SUBTASK":
-                int epicId = Integer.parseInt(line[5]);
-                Subtask subtask = new Subtask(name, description, epicId);
+                int epicId = Integer.parseInt(line[7]);
+                Subtask subtask = new Subtask(name, description, epicId, duration, startTime);
                 subtask.setId(id);
                 subtask.setStatus(status);
                 return subtask;
