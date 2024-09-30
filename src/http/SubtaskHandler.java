@@ -5,10 +5,6 @@ import task.Subtask;
 import manager.ManagerException;
 import manager.TaskManager;
 import com.google.gson.Gson;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import utils.DurationAdapter;
-import utils.LocalDateTimeAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +14,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
+import utils.DurationAdapter;
+import utils.LocalDateTimeAdapter;
+import com.sun.net.httpserver.HttpExchange;
+
+public class SubtaskHandler extends BaseHttpHandler {
     private final Gson gson;
     private final TaskManager taskManager;
 
@@ -82,6 +82,10 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                     sendHasInteractions(exchange);
                 }
             }
+        } catch (ManagerException e) {
+            sendText(exchange, "Manager Error: " + e.getMessage(), 400);
+        } catch (IOException e) {
+            sendText(exchange, "Input/Output Error: " + e.getMessage(), 500);
         } catch (Exception e) {
             sendText(exchange, "Internal Server Error", 500);
         }

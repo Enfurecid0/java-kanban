@@ -1,7 +1,6 @@
 package http;
 
 import com.google.gson.GsonBuilder;
-import com.sun.net.httpserver.HttpHandler;
 
 import task.Task;
 import manager.TaskManager;
@@ -15,7 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
+public class PrioritizedHandler extends BaseHttpHandler {
     private final Gson gson;
     private final TaskManager taskManager;
 
