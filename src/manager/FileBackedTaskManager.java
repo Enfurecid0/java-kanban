@@ -30,7 +30,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         try {
                             writer.write(taskString + "\n");
                         } catch (IOException exp) {
-                            throw new ManagerSaveException("Ошибка сохранения задачи.");
+                            throw new ManagerException("Ошибка сохранения задачи.");
                         }
                     });
 
@@ -40,7 +40,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         try {
                             writer.write(epicString + "\n");
                         } catch (IOException exp) {
-                            throw new ManagerSaveException("Ошибка сохранения эпика.");
+                            throw new ManagerException("Ошибка сохранения эпика.");
                         }
                     });
 
@@ -50,11 +50,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         try {
                             writer.write(subtaskString + "\n");
                         } catch (IOException exp) {
-                            throw new ManagerSaveException("Ошибка сохранения подзадачи.");
+                            throw new ManagerException("Ошибка сохранения подзадачи.");
                         }
                     });
         } catch (IOException e) {
-            throw new ManagerSaveException("Can't write to file: " + file.getName());
+            throw new ManagerException("Can't write to file: " + file.getName());
         }
     }
 
@@ -78,7 +78,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Can`t read from file: " + file.getName());
+            throw new ManagerException("Can`t read from file: " + file.getName());
         }
         return manager;
     }

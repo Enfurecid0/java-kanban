@@ -55,8 +55,8 @@ public class Task implements Comparable {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.duration = duration;
-        this.startTime = startTime;
+        this.duration = (duration != null) ? duration : Duration.ZERO;
+        this.startTime = (startTime != null) ? startTime : LocalDateTime.now();
     }
 
 
